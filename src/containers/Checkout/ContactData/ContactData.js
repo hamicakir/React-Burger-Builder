@@ -1,9 +1,12 @@
 import React , { Component } from 'react';
 import classes from './ContactData.css';
 import Button from '../../../components/UI/Button/Button';
-import axios from '../../../axios-orders';
+import * as ActionCreators from '../../../store/actions/index';
 import Spinner from '../../../components/UI/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
+import { connect } from 'react-redux';
+import axios from '../../../axios-orders';
+import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler';
 
 class ContactData extends Component {
     state={
@@ -94,7 +97,6 @@ class ContactData extends Component {
             },
         },
         formIsValid: false,
-        loading:false
     };
     componentDidMount(){
         console.log(this.props);
@@ -128,16 +130,10 @@ class ContactData extends Component {
         };
         console.log(orderData);
         if(this.state.formIsValid){
-            axios.post('/order.json', orderData).then(res => {
-                console.log(res);
-                this.setState({loading:false});
-                this.props.history.push('/');
-            }).catch(error => {
-                this.setState({loading:false})
-            });
+            this.props.onPurchaseBurgerStart(orderData);
         }
     };
-    inputChangedHandler = (event, inputIdentifier)=> {
+    inputChangedHandler = (event, inputIdentifier) => {
         let value = {...this.state.orderForm};
         value[inputIdentifier].value = event.target.value;
         value[inputIdentifier].valid = this.checkValidity(value[inputIdentifier].value, value[inputIdentifier].validation);
@@ -164,7 +160,7 @@ class ContactData extends Component {
         return(
             <div className={classes.ContactData}>
                 <h4>Enter your contact data</h4>{
-                this.state.loading ? <Spinner/> :   <form>
+                this.props.error ? <Spinner/> :   <form>
                     {formElementsArray.map(formelement => {
                         return <Input key={formelement.id}
                                       elementType={formelement.config.elementType}
@@ -187,5 +183,17 @@ class ContactData extends Component {
         )
     }
 }
+const mapStateToProps = state => {
+    return{
+        ingredients: state.burger.ingredients,
+        totalPrice: state.burger.totalPrice,
+        error: state.order.error
+    }
+};
+const mapDispatchToProps = dispatch => {
+    return{
+        onPurchaseBurgerStart: (orderData) => { dispatch(ActionCreators.purchaseBurger(orderData)) }
+    }
+};
 
-export default ContactData;
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(ContactData, axios));

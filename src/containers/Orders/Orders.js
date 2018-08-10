@@ -4,22 +4,15 @@ import Order from '../../components/Order/Order';
 import axios from '../../axios-orders';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
+import { connect } from 'react-redux';
+import * as ActionCreator from '../../store/actions/index';
 
 class Orders extends Component{
     state={
-        orderList:{},
         loading:true
     };
     componentDidMount(){
-        axios.get('/order.json').then(res => {
-            console.log(res);
-            this.setState({
-                orderList: res.data,
-                loading:false
-            });
-        }).catch(error => {
-
-        });
+        this.props.onOrdersFetchStart();
     };
     getOneOrder = (name) => {
         console.log(name);
@@ -28,18 +21,19 @@ class Orders extends Component{
         })
     };
     render(){
+        console.log(this.props.orderList);
         return (
             <div className={classes.Orders}>
                 {
-                    this.state.loading ? <Spinner/> :
+                    this.props.error ? <Spinner/> :
                         <div>
-                            {Object.keys(this.state.orderList).map((order)=> {
+                            {Object.keys(this.props.orderList).map((order)=> {
                                 return (
                                     <Order
                                         key={order}
                                         name={order}
-                                        price={parseFloat(this.state.orderList[order].price).toFixed(2)}
-                                        ingredients={this.state.orderList[order].ingredients}
+                                        price={parseFloat(this.props.orderList[order].price).toFixed(2)}
+                                        ingredients={this.props.orderList[order].ingredients}
                                         onClick={this.getOneOrder}
                                     />
                                 )
@@ -50,5 +44,15 @@ class Orders extends Component{
         );
     }
 }
-
-export default withErrorHandler(Orders, axios);
+const mapStateToProps = state => {
+    return {
+        orderList: state.order.orderList,
+        error: state.order.error
+    }
+};
+const mapDispatchToProps = dispatch => {
+    return {
+        onOrdersFetchStart: () => dispatch(ActionCreator.fetchOrderStart())
+    }
+};
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, axios));
