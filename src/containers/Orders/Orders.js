@@ -12,7 +12,8 @@ class Orders extends Component{
         loading:true
     };
     componentDidMount(){
-        this.props.onOrdersFetchStart();
+        this.props.onOrdersFetchStart(this.props.token, this.props.userId);
+        console.log(this.props);
     };
     getOneOrder = (name) => {
         console.log(name);
@@ -37,7 +38,7 @@ class Orders extends Component{
                                         onClick={this.getOneOrder}
                                     />
                                 )
-                            })}
+                            })  }
                         </div>
                 }
             </div>
@@ -47,12 +48,14 @@ class Orders extends Component{
 const mapStateToProps = state => {
     return {
         orderList: state.order.orderList,
-        error: state.order.error
+        error: state.order.error,
+        token: state.auth.token,
+        userId: state.auth.userId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onOrdersFetchStart: () => dispatch(ActionCreator.fetchOrderStart())
+        onOrdersFetchStart: (token, userId) => dispatch(ActionCreator.fetchOrderStart(token,userId))
     }
 };
 export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, axios));

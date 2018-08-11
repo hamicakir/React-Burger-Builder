@@ -8,3 +8,9 @@ export {
     purchaseInit,
     fetchOrderStart
 } from './order.js';
+export {
+    auth,
+    logout,
+    setAuthRedirectPath,
+    authCheckState
+} from './auth'

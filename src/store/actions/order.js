@@ -6,10 +6,10 @@ export const purchaseBurgerStart = () => {
         type:actionTypes.PURCHASE_BURGER_START
     }
 };
-export const purchaseBurger = orderData => {
+export const purchaseBurger = (orderData, token) => {
     return dispatch => {
         dispatch(purchaseBurgerStart());
-        axios.post('/order.json', orderData).then(res => {
+        axios.post('/order.json?auth=' + token, orderData).then(res => {
             console.log(res);
             dispatch(purchaseBurgerSuccess(res.data.name, orderData));
         }).catch(error => {
@@ -37,9 +37,9 @@ export const purchaseInit = () => {
         type:actionTypes.PURCHASE_INIT
     }
 };
-export const fetchOrderStart = () => {
-    return dispatch => {
-        axios.get('/order.json').then(res => {
+export const fetchOrderStart = (token, userId) => {
+    return (dispatch) => {
+        axios.get('/order.json?auth=' + token + '&orderBy="userId"&equalTo="'+ userId + '"').then(res => {
             console.log(res);
             dispatch(fetchOrderSuccess(res.data));
         }).catch(error => {

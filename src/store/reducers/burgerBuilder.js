@@ -12,6 +12,7 @@ const initialState = {
     ingredients: null,
     error:false,
     totalPrice: 1,
+    building: false
 };
 const addIngredient = (currentState, action) => {
     return updateObject(currentState,{
@@ -19,20 +20,25 @@ const addIngredient = (currentState, action) => {
             ...currentState.ingredients,
             [action.ingredientName]: currentState.ingredients[action.ingredientName] + 1
         },
-        totalPrice: currentState.totalPrice + INGREDIENT_PRICES[action.ingredientName]});
+        totalPrice: currentState.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+        building:true
+    });
 };
 const removeIngredient = (currentState, action) => {
     return updateObject(currentState,{ ingredients:{
             ...currentState.ingredients,
             [action.ingredientName]: currentState.ingredients[action.ingredientName] - 1
         },
-        totalPrice: currentState.totalPrice - INGREDIENT_PRICES[action.ingredientName] });
+        totalPrice: currentState.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+        building:true
+    });
 };
 const setIngredients = (currentState, action) => {
     return updateObject(currentState,{
         ingredients: action.ingredients,
-        totalPrice: 1}
-    );
+        totalPrice: 1,
+        building:false
+    });
 };
 
 const burgerBuilder = (currentState = initialState, action) => {
