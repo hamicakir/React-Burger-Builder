@@ -115,21 +115,18 @@ class ContactData extends Component {
         return isValid;
     }
     orderSubmitHandler = () => {
-        console.log(this.props.ingredients);
         //alert('You Continue');
         this.setState({loading:true});
         const formData = {};
         for(let formElementIdentifier in this.state.orderForm){
             formData[formElementIdentifier] = this.state.orderForm[formElementIdentifier].value;
         }
-        console.log(formData);
         const orderData = {
             price:this.props.totalPrice,
             ingredients: this.props.ingredients,
             contactData: formData,
             userId:this.props.userId
         };
-        console.log(orderData);
         if(this.state.formIsValid){
             this.props.onPurchaseBurgerStart(orderData, this.props.token);
         }
@@ -147,8 +144,6 @@ class ContactData extends Component {
             orderForm: value,
             formIsValid: formIsValid
         });
-        console.log(this.state.orderForm[inputIdentifier]);
-        console.log(this.state.orderForm[inputIdentifier].value);
     };
     render(){
         let formElementsArray = [];
@@ -179,7 +174,6 @@ class ContactData extends Component {
                     >Order</Button>
                 </form>
             }
-
             </div>
         )
     }

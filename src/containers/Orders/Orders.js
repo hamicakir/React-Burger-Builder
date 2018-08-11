@@ -13,13 +13,6 @@ class Orders extends Component{
     };
     componentDidMount(){
         this.props.onOrdersFetchStart(this.props.token, this.props.userId);
-        console.log(this.props);
-    };
-    getOneOrder = (name) => {
-        console.log(name);
-        axios.get(`/order/${name}`).then(res => {
-            console.log(res);
-        })
     };
     render(){
         console.log(this.props.orderList);
